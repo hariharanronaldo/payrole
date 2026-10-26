@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InternOps AI - Autonomous Cohort Operations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    .terminal-scroll::-webkit-scrollbar { width: 6px; }
+    .terminal-scroll::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+  <!-- Top Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-robot"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            InternOps AI
+            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">3-Month Cohort Architect</span>
+          </h1>
+          <p class="text-xs text-slate-400">Autonomous Workflow Coordinator & AI Guidance Engine</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 text-sm">
+        <div class="flex items-center gap-2 px-3 py-1 rounded-md bg-slate-800/80 border border-slate-700/50">
+          <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-xs text-slate-300 font-mono" id="email-mode">DISPATCH: ACTIVE</span>
+        </div>
+        <a href="/docs" target="_blank" class="text-xs text-slate-400 hover:text-indigo-400 transition-colors flex items-center gap-1">
+          <i class="fa-solid fa-book-open"></i> API Docs
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full space-y-6">
+    <!-- Stat Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-4 shadow-sm">
+        <div class="p-3 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+          <i class="fa-solid fa-users-viewfinder text-xl"></i>
+        </div>
+        <div>
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Active Cohorts</div>
+          <div class="text-2xl font-bold text-white" id="stat-cohorts">0</div>
+        </div>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-4 shadow-sm">
+        <div class="p-3 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <i class="fa-solid fa-user-astronaut text-xl"></i>
+        </div>
+        <div>
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Enrolled Interns</div>
+          <div class="text-2xl font-bold text-white" id="stat-interns">0</div>
+        </div>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-4 shadow-sm">
+        <div class="p-3 rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20">
+          <i class="fa-solid fa-list-check text-xl"></i>
+        </div>
+        <div>
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Assigned Tasks</div>
+          <div class="text-2xl font-bold text-white" id="stat-tasks">0</div>
+        </div>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-4 shadow-sm">
+        <div class="p-3 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+          <i class="fa-solid fa-rotate text-xl"></i>
+        </div>
+        <div>
+          <div class="text-xs font-medium text-slate-400 uppercase tracking-wider">Revisions Tracked</div>
+          <div class="text-2xl font-bold text-white" id="stat-revisions">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Split: Operations Console & Cohort Roster -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Operations Chat Console (7 cols) -->
+      <div class="lg:col-span-7 flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg h-[670px]">
+        <div class="px-4 py-3 border-b border-slate-800 bg-slate-800/40 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-terminal text-indigo-400 text-sm"></i>
+            <span class="font-semibold text-sm">InternOps AI Interactive Terminal</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 font-mono">POST /chat</span>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="clearChat()" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800">Clear</button>
+            <button onclick="refreshData()" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Command Pills -->
+        <div class="px-4 py-2 border-b border-slate-800/60 bg-slate-950/40 flex flex-wrap gap-2 text-xs">
+          <span class="text-slate-500 self-center font-mono">Quick:</span>
+          <button onclick="fillCommand('/assign-task cohort=1 title=&quot;Task 2: Redis Caching&quot; spec=&quot;Implement caching with invalidation hooks and 85%+ test coverage&quot;')" 
+                  class="px-2.5 py-1 rounded bg-indigo-950/80 border border-indigo-700/50 text-indigo-300 hover:bg-indigo-900/90 transition">
+            ⚡ /assign-task (T+2, T+3)
+          </button>
+          <button onclick="fillCommand('/review-task intern_id=1 task_id=1 code=&quot;https://github.com/intern001/auth&quot; notes=&quot;Missing unit tests for edge cases; please sanitize error outputs&quot;')" 
+                  class="px-2.5 py-1 rounded bg-purple-950/80 border border-purple-700/50 text-purple-300 hover:bg-purple-900/90 transition">
+            🤖 /review-task
+          </button>
+          <button onclick="fillCommand('/leaderboard cohort=1')" 
+                  class="px-2.5 py-1 rounded bg-amber-950/80 border border-amber-700/50 text-amber-300 hover:bg-amber-900/90 transition">
+            🏆 /leaderboard
+          </button>
+          <button onclick="fillCommand('/final-verdict intern_id=1')" 
+                  class="px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-700/50 text-emerald-300 hover:bg-emerald-900/90 transition">
+            📜 /final-verdict
+          </button>
+          <button onclick="fillCommand('/status cohort=1')" 
+                  class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            📊 /status
+          </button>
+        </div>
+
+        <!-- Message History Log -->
+        <div id="chat-history" class="flex-1 p-4 overflow-y-auto space-y-3 font-mono text-sm terminal-scroll bg-slate-950/60">
+          <div class="text-xs text-slate-500 text-center py-2">
+            InternOps AI ready. Dispatch tasks, trigger AI review guidance, check leaderboards, or query final verdicts.
+          </div>
+        </div>
+
+        <!-- Inbound Command Input -->
+        <form onsubmit="handleSend(event)" class="p-3 border-t border-slate-800 bg-slate-900 flex gap-2">
+          <input 
+            id="sender-input" 
+            type="email" 
+            value="manager@techcorp.internal" 
+            title="User / Webhook Email"
+            class="w-48 bg-slate-950 border border-slate-800 text-xs rounded-lg px-2.5 py-2 text-slate-300 focus:outline-none focus:border-indigo-500 font-mono"
+            placeholder="manager@techcorp.internal"
+          />
+          <input 
+            id="cmd-input" 
+            type="text" 
+            placeholder="Type /assign-task, /review-task 1, /leaderboard, or natural language prompt..." 
+            class="flex-1 bg-slate-950 border border-slate-800 text-sm rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-indigo-500 font-mono"
+          />
+          <button 
+            type="submit" 
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium text-sm transition flex items-center gap-1.5 shadow-md shadow-indigo-600/30">
+            <span>Send</span>
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Cohorts & Tasks Right Column (5 cols) -->
+      <div class="lg:col-span-5 flex flex-col gap-6 h-[670px]">
+        <!-- Cohorts Box -->
+        <div class="flex-1 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+          <div class="px-4 py-3 border-b border-slate-800 bg-slate-800/40 flex items-center justify-between">
+            <span class="font-semibold text-sm flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-sky-400"></i> Cohorts Overview
+            </span>
+            <span class="text-xs text-slate-400" id="cohorts-badge">0 cohorts</span>
+          </div>
+          <div class="p-3 overflow-y-auto flex-1 space-y-2 terminal-scroll" id="cohorts-list">
+            <div class="text-center text-slate-500 text-xs py-8">Loading cohorts...</div>
+          </div>
+        </div>
+
+        <!-- Recent Tasks Box -->
+        <div class="flex-1 bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
+          <div class="px-4 py-3 border-b border-slate-800 bg-slate-800/40 flex items-center justify-between">
+            <span class="font-semibold text-sm flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-list text-purple-400"></i> Dispatched Tasks & Dynamic Deadlines
+            </span>
+            <span class="text-xs text-slate-400" id="tasks-badge">0 tasks</span>
+          </div>
+          <div class="p-3 overflow-y-auto flex-1 space-y-2 terminal-scroll" id="tasks-list">
+            <div class="text-center text-slate-500 text-xs py-8">No tasks assigned yet.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    async function refreshData() {
+      try {
+        const [healthRes, cohortsRes, tasksRes] = await Promise.all([
+          fetch('/health').then(r => r.json()),
+          fetch('/api/cohorts').then(r => r.json()),
+          fetch('/api/tasks').then(r => r.json())
+        ]);
+
+        // Stats
+        document.getElementById('stat-cohorts').innerText = healthRes.cohort_count || 0;
+        document.getElementById('stat-interns').innerText = healthRes.intern_count || 0;
+        document.getElementById('stat-tasks').innerText = tasksRes.length || 0;
+        document.getElementById('stat-revisions').innerText = healthRes.revisions_tracked || 0;
+
+        // Cohorts list
+        const cList = document.getElementById('cohorts-list');
+        document.getElementById('cohorts-badge').innerText = `${cohortsRes.length} cohorts`;
+        if (cohortsRes.length === 0) {
+          cList.innerHTML = `<div class="p-4 text-center text-slate-500 text-xs">No cohorts seeded. Run <code>python seed.py</code></div>`;
+        } else {
+          cList.innerHTML = cohortsRes.map(c => `
+            <div class="p-3 rounded-lg bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+              <div>
+                <div class="font-semibold text-sm text-slate-100">${c.name}</div>
+                <div class="text-xs text-slate-400">Start: ${c.start_date || 'N/A'} • Status: <span class="text-emerald-400">${c.status}</span></div>
+              </div>
+              <div class="text-right">
+                <span class="px-2 py-0.5 rounded text-xs bg-indigo-500/20 text-indigo-300 font-mono">${c.total_interns} Interns</span>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Tasks list
+        const tList = document.getElementById('tasks-list');
+        document.getElementById('tasks-badge').innerText = `${tasksRes.length} tasks`;
+        if (tasksRes.length === 0) {
+          tList.innerHTML = `<div class="p-4 text-center text-slate-500 text-xs">No tasks assigned yet. Click <code>⚡ /assign-task</code>!</div>`;
+        } else {
+          tList.innerHTML = tasksRes.map(t => `
+            <div class="p-3 rounded-lg bg-slate-950/80 border border-slate-800">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-semibold text-sm text-slate-100">#${t.id}: ${t.title}</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">Cohort #${t.cohort_id}</span>
+              </div>
+              <div class="text-xs text-slate-400 line-clamp-1 mb-2">${t.spec}</div>
+              <div class="flex flex-wrap gap-2 text-[11px] font-mono text-slate-400">
+                <span class="text-amber-400">Deadline (T+2): ${t.due_date || 'N/A'}</span>
+                <span>•</span>
+                <span class="text-sky-400">Review (T+3): ${t.review_date || 'N/A'}</span>
+                <span>•</span>
+                <span>Assigned: <b class="text-slate-200">${t.stats.total}</b></span>
+                <span>•</span>
+                <span>Reviewed: <b class="text-emerald-400">${t.stats.reviewed}</b></span>
+              </div>
+            </div>
+          `).join('');
+        }
+
+      } catch (err) {
+        console.error('Failed to refresh data', err);
+      }
+    }
+
+    function appendMessage(sender, text, isUser = false) {
+      const container = document.getElementById('chat-history');
+      const div = document.createElement('div');
+      div.className = isUser ? 'flex justify-end' : 'flex justify-start';
+
+      const bubble = document.createElement('div');
+      bubble.className = isUser 
+        ? 'max-w-[85%] p-3 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-slate-100'
+        : 'max-w-[85%] p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200';
+
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      bubble.innerHTML = `
+        <div class="flex items-center justify-between gap-4 mb-1 text-[11px] text-slate-400 font-mono">
+          <span>${sender}</span>
+          <span>${time}</span>
+        </div>
+        <div class="whitespace-pre-wrap leading-relaxed">${escapeHtml(text)}</div>
+      `;
+
+      div.appendChild(bubble);
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function fillCommand(cmd) {
+      document.getElementById('cmd-input').value = cmd;
+      document.getElementById('cmd-input').focus();
+    }
+
+    function clearChat() {
+      document.getElementById('chat-history').innerHTML = '';
+    }
+
+    async function handleSend(e) {
+      e.preventDefault();
+      const input = document.getElementById('cmd-input');
+      const senderInput = document.getElementById('sender-input');
+      const text = input.value.trim();
+      const email = senderInput.value.trim() || 'manager@techcorp.internal';
+
+      if (!text) return;
+
+      appendMessage(email, text, true);
+      input.value = '';
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_email: email, text: text })
+        });
+        const data = await res.json();
+        appendMessage('InternOps AI', data.reply, false);
+        refreshData();
+      } catch (err) {
+        appendMessage('System Error', `Failed to contact server: ${err.message}`, false);
+      }
+    }
+
+    // Auto-refresh every 10s and initial load
+    refreshData();
+    setInterval(refreshData, 10000);
+  </script>
+</body>
+</html>
